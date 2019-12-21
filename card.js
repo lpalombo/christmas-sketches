@@ -30,9 +30,19 @@ const sketch = (props) => {
   const margin = 1; // in working 'units' based on settings
 
   const drawCircle = (x,y,r) => {
-    const p = createPath();
-    p.arc(x,y,r,0,2 * Math.PI);
-    paths.push(p);
+
+    const segments = Math.floor(Random.range(5,10));
+    const angleInc = (Math.PI * 2) / segments;
+
+    for(let i = 0; i < segments; i++) {
+      const p = createPath();
+
+      p.moveTo(x,y);
+      p.lineTo(x + r * Math.cos(angleInc * i), y + r * Math.sin(angleInc * i));
+      
+      p.closePath();
+      paths.push(p);
+    }
     const Circle = new Object();
     Circle['x'] = x;
     Circle['y'] = y;
