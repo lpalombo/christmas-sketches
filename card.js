@@ -29,19 +29,51 @@ const sketch = (props) => {
   const circles = [];
   const margin = 1; // in working 'units' based on settings
 
+  const drawBranch = (x,y,angle,length) => {
+    if(length < .1) {
+      return;
+    }
+    const a = Math.PI/8;
+
+    const x1 = x + length * Math.cos(angle - a);
+    const y1 = y + length * Math.sin(angle - a);
+    const p = createPath();
+    p.moveTo(x,y);
+    p.lineTo(x1, y1);
+    p.closePath();
+    paths.push(p);
+    drawBranch(x1,y1,angle-a,length/2);
+
+    const x2 = x + length * Math.cos(angle + a);
+    const y2 = y + length * Math.sin(angle + a);
+    const p2 = createPath();
+    p2.moveTo(x,y);
+    p2.lineTo(x2, y2);
+    p2.closePath();
+    paths.push(p2);
+    drawBranch(x2,y2,angle+a,length/2);
+
+  }
+
   const drawCircle = (x,y,r) => {
 
-    const segments = Math.floor(Random.range(5,10));
+    const segments = Math.floor(Random.range(5,8));
     const angleInc = (Math.PI * 2) / segments;
+    const branchAmt = Math.floor(Random.range(3,6));
+    const length = (r / 3);
 
     for(let i = 0; i < segments; i++) {
       const p = createPath();
+      const a = angleInc * i;
 
       p.moveTo(x,y);
-      p.lineTo(x + r * Math.cos(angleInc * i), y + r * Math.sin(angleInc * i));
-      
+      const newX = x + length * Math.cos(a);
+      const newY = y + length * Math.sin(a);
+      p.lineTo(newX, newY);
       p.closePath();
       paths.push(p);
+
+      drawBranch(newX,newY,a,r/3);
     }
     const Circle = new Object();
     Circle['x'] = x;
@@ -55,7 +87,7 @@ const sketch = (props) => {
   for (let i = 0; i < count; i++) {
     const x = Random.range(margin,width-margin);
     const y = Random.range(margin,height-margin);
-    const r = Random.range(.05,5);
+    const r = Random.range(.3,5);
     
     if(circles.length) {
       const filtered = circles.filter((el) => {
