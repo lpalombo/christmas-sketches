@@ -29,30 +29,45 @@ const sketch = (props) => {
   const circles = [];
   const margin = 1; // in working 'units' based on settings
 
-  const drawBranch = (x,y,angle,length) => {
+  let branchInc = 10;
+
+  const drawBranch = (x,y,angle,length,branchLen) => {
+    branchInc = branchInc - 1;
+    const len = branchLen[branchInc];
+
     if(length < .1) {
       return;
     }
-    const a = Math.PI/8;
+    const a = Math.PI/4;
 
-    const x1 = x + length * Math.cos(angle - a);
-    const y1 = y + length * Math.sin(angle - a);
+    const x1 = x + (length * len) * Math.cos(angle - a);
+    const y1 = y + (length * len) * Math.sin(angle - a);
     const p = createPath();
     p.moveTo(x,y);
     p.lineTo(x1, y1);
     p.closePath();
     paths.push(p);
-    drawBranch(x1,y1,angle-a,length/2);
+    // drawBranch(x1,y1,angle-a,length/2);
 
-    const x2 = x + length * Math.cos(angle + a);
-    const y2 = y + length * Math.sin(angle + a);
+    const x2 = x + (length * len) * Math.cos(angle + a);
+    const y2 = y + (length * len) * Math.sin(angle + a);
     const p2 = createPath();
     p2.moveTo(x,y);
     p2.lineTo(x2, y2);
     p2.closePath();
     paths.push(p2);
-    drawBranch(x2,y2,angle+a,length/2);
+    // drawBranch(x2,y2,angle+a,length/2);
 
+
+    const x3 = x + (length) * Math.cos(angle);
+    const y3 = y + (length) * Math.sin(angle);
+    const p3 = createPath();
+    p3.moveTo(x,y);
+    p3.lineTo(x3, y3);
+    p3.closePath();
+    paths.push(p3);
+    drawBranch(x3,y3,angle,length/2,branchLen);
+    branchInc = 10;
   }
 
   const drawCircle = (x,y,r) => {
@@ -61,6 +76,11 @@ const sketch = (props) => {
     const angleInc = (Math.PI * 2) / segments;
     const branchAmt = Math.floor(Random.range(3,6));
     const length = (r / 3);
+
+    const branchLen = [];
+    for(let i = 0; i < 10; i++) {
+      branchLen.push(Random.range(.5,2));
+    }
 
     for(let i = 0; i < segments; i++) {
       const p = createPath();
@@ -73,8 +93,9 @@ const sketch = (props) => {
       p.closePath();
       paths.push(p);
 
-      drawBranch(newX,newY,a,r/3);
+      drawBranch(newX,newY,a,r/3,branchLen);
     }
+
     const Circle = new Object();
     Circle['x'] = x;
     Circle['y'] = y;
