@@ -14,7 +14,7 @@ console.log('Random Seed:', Random.getSeed());
 
 const settings = {
   suffix: Random.getSeed(),
-  dimensions: 'postcard',
+  dimensions: 'a7',
   pixelsPerInch: 300,
   scaleToView: true,
   units: 'cm'
@@ -45,7 +45,7 @@ const sketch = (props) => {
     const p = createPath();
     p.moveTo(x,y);
     p.lineTo(x1, y1);
-    p.closePath();
+    //p.closePath();
     paths.push(p);
     // drawBranch(x1,y1,angle-a,length/2);
 
@@ -54,7 +54,7 @@ const sketch = (props) => {
     const p2 = createPath();
     p2.moveTo(x,y);
     p2.lineTo(x2, y2);
-    p2.closePath();
+    //p2.closePath();
     paths.push(p2);
     // drawBranch(x2,y2,angle+a,length/2);
 
@@ -64,7 +64,7 @@ const sketch = (props) => {
     const p3 = createPath();
     p3.moveTo(x,y);
     p3.lineTo(x3, y3);
-    p3.closePath();
+    //p3.closePath();
     paths.push(p3);
     drawBranch(x3,y3,angle,length/2,branchLen);
     branchInc = 10;
@@ -90,7 +90,7 @@ const sketch = (props) => {
       const newX = x + length * Math.cos(a);
       const newY = y + length * Math.sin(a);
       p.lineTo(newX, newY);
-      p.closePath();
+      //p.closePath();
       paths.push(p);
 
       drawBranch(newX,newY,a,r/3,branchLen);
@@ -131,7 +131,7 @@ const sketch = (props) => {
 
   // Convert the paths into polylines so we can apply line-clipping
   // When converting, pass the 'units' to get a nice default curve resolution
-  let lines = pathsToPolylines(paths, { units });
+  let lines = pathsToPolylines(paths, { curveResolution: 1 });
 
   // Clip to bounds, using a margin in working units
   
@@ -147,7 +147,9 @@ const sketch = (props) => {
     // in working units; you might have a thicker pen
     lineWidth: 0.04,
     // Optimize SVG paths for pen plotter use
-    optimize: true
+    optimize: {
+      merge : false
+    }
   });
 };
 
